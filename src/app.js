@@ -4,6 +4,9 @@ const express = require('express'),
 // const userRoutes = require('./routes/routes');
 const logger = require('./utils/logger');
 
+require('dotenv').config()
+require('../src/config/passport') // register LocalStrategy & JwtStrategy globaly 
+
 app.use(logger); //applies logger middleware to all route calls
 
 // express.static -> automatically routes all requests for static files (html) to their corresponding files within a certain folder on the server 
