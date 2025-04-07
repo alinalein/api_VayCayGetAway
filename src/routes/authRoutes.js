@@ -28,7 +28,7 @@ router.post('/login', (req, res) => {
                 responseUser, token
             })
         })
-    })(req, res, next)
+    })(req, res)
 })
 
 module.exports = router;
