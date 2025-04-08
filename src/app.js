@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path');
 const app = express();  // Creates the Express app
-// const bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const logger = require('./utils/logger');
 const appliedCors = require('./config/cors')
 
@@ -15,7 +15,7 @@ app.use(logger); //applies logger middleware to all route calls
 // express.static -> automatically routes all requests for static files (html) to their corresponding files within a certain folder on the server 
 app.use(express.static(path.join(__dirname, '..', 'docs')));
 
-// app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 app.use(express.json()); // Middleware to parse incoming JSON requests body(string -> JS object) 
 // order matters , if import the routes before , the request body string will not be parsed proper to JS object 
 

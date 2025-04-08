@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 //const passportJWT = require('passport-jwt');
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 
-const { User } = require('../models/user');
+const Users = require('../models/user').User;
 
 // let JWTStrategy = passport.Strategy;
 // let ExtractJWT = passportJWT.ExtractJwt;
@@ -18,7 +18,7 @@ passport.use(
         async (username, password, done) => {
             //console.log(`${username} ${password}`);
             try {
-                const user = await User.findOne({ username: username });
+                const user = await Users.findOne({ username: username });
 
                 if (!user) {
                     console.log('username does not exists');
@@ -54,7 +54,7 @@ passport.use(
     }, async (jwtPayload, done) => {
         try {
             // as set _id to id in jws.js
-            const user = await User.findById(jwtPayload.id)
+            const user = await Users.findById(jwtPayload.id)
             return done(null, user || false)  // false if no user found
         } catch (error) {
             console.error('Error during JWT verification:', error);

@@ -25,6 +25,7 @@ router.post('/login', (req, res) => {
                 favoriteDestinations: user.favoriteDestinations
             }
             return res.status(201).json({
+                message: 'user logged in',
                 responseUser, token
             })
         })

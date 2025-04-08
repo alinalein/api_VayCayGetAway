@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router(); // Creates a new router -> what allows to define routes 
-const { Destination } = require('../models/destination');
+const jwt = require('../middlewares/auth')
+const Destinations = require('../models/destination').Destination;
 
 router.get('/', (req, res) => res.json({ message: 'API is working!' }));
 
-router.get('/destinations', async (req, res) => {
+router.get('/destinations', jwt, async (req, res) => {
     try {
-        const destinations = await Destination.find()
+        const destinations = await Destinations.find()
         res.status(200).json(destinations)
     } catch (error) {
         console.error(error);
