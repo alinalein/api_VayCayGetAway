@@ -22,6 +22,7 @@ app.use(express.json()); // Middleware to parse incoming JSON requests body(stri
 app.use(require('./routes/authRoutes'))
 app.use(require('./routes/destinationRoutes'))
 app.use(require('./routes/userRoutes'))
+app.use(require('./routes/reviewRoutes'))
 // app.use('/api/users', userRoutes); // sets prefix for the user routes too 
 
 module.exports = app;

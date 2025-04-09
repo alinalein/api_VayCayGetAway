@@ -19,10 +19,10 @@ router.get('/destinations', jwt, async (req, res) => {
 router.get('/destination/:id', jwt, async (req, res) => {
     try {
         const destination = await Destinations.findOne({ _id: req.params.id })
-        res.status(200).json(destination)
+        return res.status(200).json(destination)
     } catch (error) {
         console.error(error);
-        res.status(400).send('Error occured fetching destinations', error)
+        return res.status(400).send('Error occured fetching destinations', error)
     }
 })
 
