@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('../middlewares/auth');
+const { Destination } = require('../models/destination');
 const Users = require('../models/user').User
 
 router.post('/signup', async (req, res) => {
@@ -96,34 +97,90 @@ router.put('/updateProfile', jwt, async (req, res) => {
     }
 })
 
-router.delete('/deleteDestination/:id', jwt, (req, res) => {
-
+router.delete('/deleteDestination/:type/:id', jwt, async (req, res) => {
     try {
+        const usernameFromToken = req.user?.username;
+        const { type, id } = req.params
+        const validTypes = ['visited', 'favorite']
 
+        if (!validTypes.includes(type)) {
+            return res.status(400).send(`Invalid type. Valid typed are ${validTypes}`)
+        }
+
+        const updatedField = type === 'visited' ? 'visitedDestinations' : 'favoriteDestinations'
+
+        const isInList = await Users.findOne({
+            username: usernameFromToken,
+            // mongoose interprets it as is id in array?
+            [updatedField]: id
+        })
+
+        if (!isInList) {
+            return res.status(404).send(`No such destination in ${type}`)
+        }
+
+        const updatedUser = await Users.findOneAndUpdate(
+            { username: usernameFromToken },
+            { $pull: { [updatedField]: id } },
+            { new: true }
+        )
+
+        if (!updatedUser) {
+            return res.status(500).send(`Destination could not be removed from ${type}`)
+        }
+
+        return res.status(200).json({
+            message: 'Destination removed from favorites',
+            user: updatedUser.username,
+            [updatedField]: updatedUser[updatedField]
+        })
     }
     catch (error) {
-
+        console.error(error)
+        return res.status(400).send(`Error ${error} occured while removing destination from favorites`)
     }
 })
 
-router.put('/addDestination', jwt, (req, res) => {
-
+router.put('/addDestination/:type/:id', jwt, async (req, res) => {
     try {
+        const usernameFromToken = req.user?.username
+        const { id, type } = req.params
+        const validTypes = ['visited', 'favorite']
+
+        if (!validTypes.includes(type)) {
+            return res.status(400).send(`Invalid type. Allowed types are ${validTypes}`)
+        }
+
+        const toUpdateField = type === 'favorite' ? 'favoriteDestinations' : 'visitedDestinations'
+
+        const isInList = await Users.findOne({
+            username: usernameFromToken,
+            // mongoose interprets as is id in array? - if would write just visitedDestinations, would not need to set [] around
+            [toUpdateField]: id
+        })
+        if (isInList) {
+            return res.status(409).send(`Destination is already in your ${type} list`)
+        }
+        const updatedUser = await Users.findOneAndUpdate(
+            { username: usernameFromToken },
+            { $addToSet: { [toUpdateField]: id } },
+            { new: true }
+        )
+        if (!updatedUser) {
+            return res.status(500).send(`Could not add destination to ${type} list`)
+        }
+
+        return res.status(200).json({
+            message: 'Destination added to List',
+            user: updatedUser.username,
+            [toUpdateField]: updatedUser[toUpdateField]
+        })
 
     }
     catch (error) {
-
+        console.error(error)
+        return res.status(400).send(`Error ${error} occured while removing adding to favorites`)
     }
 })
-
-// router.delete('/deleteProfie', jwt, (req, res) => {
-
-//     try {
-
-//     }
-//     catch (error) {
-
-//     }
-// })
 
 module.exports = router; 
