@@ -7,7 +7,7 @@ router.get('/', (req, res) => res.json({ message: 'API is working!' }));
 
 router.get('/destinations', jwt, getAllDestinations);
 
-router.get('/destination/:id', jwt, getDestinationById);
+router.get('/destinations/:id', jwt, getDestinationById);
 
 router.get('/tags', jwt, getUniqueTags);
 

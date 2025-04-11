@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const passport = require('passport');
 
 let userSchema = mongoose.Schema({
     username: { type: String, required: true },

@@ -4,7 +4,7 @@ let reviewScheme = mongoose.Schema({
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     destinationID: { type: mongoose.Types.ObjectId, ref: 'Destination', required: true },
     rating: { type: Number, min: 1, max: 5 },
-    comment: { type: String, required: true },
+    comment: { type: String },
     // will be created automatically
     createdAt: { type: Date, default: Date.now }
 })

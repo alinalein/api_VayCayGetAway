@@ -1,7 +1,17 @@
+const { body, validationResult } = require('express-validator')
+const passport = require('passport')
 const Users = require('../models/user').User
+const validationErrors = require('../utils/validationErros');
 
-const signUp = async (req, res) => {
+const signUp = [body('username').isAlphanumeric().isLength({ min: 5 }).withMessage('Username must be at least 5 characters'),
+body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').matches(/\d/).withMessage('Password must contain at least one number'),
+body('email').isEmail().withMessage('Please pick a valid email address'),
+body('birthday').isISO8601().toDate().withMessage('Birthday must be a valid date (YYYY-MM-DD)'),
+async (req, res) => {
     try {
+
+        if (validationErrors(req, res)) return;
+
         if (!req.body.username) {
             return res.status(401).send('User required');
         }
@@ -31,7 +41,7 @@ const signUp = async (req, res) => {
         console.error(error)
         return res.status(500).send(`An unknown ${error} occured`)
     }
-}
+}]
 
 const getAllUsers = async (req, res) => {
     try {
@@ -56,8 +66,13 @@ const deleteProfie = async (req, res) => {
     }
 }
 
-const updateProfile = async (req, res) => {
+const updateProfile = [body('username').isAlphanumeric().isLength({ min: 5 }).withMessage('Username must be at least 5 characters'),
+body('email').isEmail().withMessage('Please pick a valid email address'),
+body('birthday').isISO8601().toDate().withMessage('Birthday must be a valid date (YYYY-MM-DD)'),
+async (req, res) => {
     try {
+        if (validationErrors(req, res)) return;
+
         // try to access user - if user - null - will not crash because of ? 
         const userId = req.user?.id
         if (!userId) {
@@ -92,12 +107,12 @@ const updateProfile = async (req, res) => {
         console.error(error)
         return res.status(400).send(`Profile couldn't be updated, error ${error}`)
     }
-}
+}]
 
 const deleteDestination = async (req, res) => {
     try {
         const userId = req.user?.id;
-        const { type, id } = req.params
+        const { type, destinationId } = req.params
         const validTypes = ['visited', 'favorite']
 
         if (!validTypes.includes(type)) {
@@ -109,7 +124,7 @@ const deleteDestination = async (req, res) => {
         const isInList = await Users.findOne({
             _id: userId,
             // mongoose interprets it as is id in array?
-            [updatedField]: id
+            [updatedField]: destinationId
         })
 
         if (!isInList) {
@@ -118,7 +133,7 @@ const deleteDestination = async (req, res) => {
 
         const updatedUser = await Users.findOneAndUpdate(
             { _id: userId },
-            { $pull: { [updatedField]: id } },
+            { $pull: { [updatedField]: destinationId } },
             { new: true }
         )
 
@@ -141,7 +156,7 @@ const deleteDestination = async (req, res) => {
 const addDestination = async (req, res) => {
     try {
         const userId = req.user?.id
-        const { id, type } = req.params
+        const { destinationId, type } = req.params
         const validTypes = ['visited', 'favorite']
 
         if (!validTypes.includes(type)) {
@@ -153,14 +168,14 @@ const addDestination = async (req, res) => {
         const isInList = await Users.findOne({
             _id: userId,
             // mongoose interprets as is id in array? - if would write just visitedDestinations, would not need to set [] around
-            [toUpdateField]: id
+            [toUpdateField]: destinationId
         })
         if (isInList) {
             return res.status(409).send(`Destination is already in your ${type} list`)
         }
         const updatedUser = await Users.findOneAndUpdate(
             { _id: userId },
-            { $addToSet: { [toUpdateField]: id } },
+            { $addToSet: { [toUpdateField]: destinationId } },
             { new: true }
         )
         if (!updatedUser) {
@@ -179,6 +194,31 @@ const addDestination = async (req, res) => {
         return res.status(400).send(`Error ${error} occured while removing adding to favorites`)
     }
 }
+const changePasswordJWT = [body('newPassword').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').matches(/\d/).withMessage('Password must contain at least one number'),
+async (req, res) => {
+    try {
+        if (validationErrors(req, res)) return;
+
+        const userId = req.user?.id
+        const existingUser = await Users.findOne({ _id: userId })
+        const passwordCheck = existingUser.validatePassword(req.body.password)
+
+        if (!passwordCheck) {
+            return res.status(403).send('Please type your current password to change it to a new password')
+        }
+
+        const newPassword = await Users.hashPassword(req.body.newPassword)
+        const updatedPassword = await Users.findOneAndUpdate({ _id: userId }, {
+            password: newPassword
+        },
+            { new: true }
+        )
+        return res.status(200).send(`Password changed successfull for ${existingUser.username}`)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send(`Error ${error} occured while changing the password`)
+    }
+}]
 
 module.exports = {
     signUp,
@@ -187,4 +227,5 @@ module.exports = {
     updateProfile,
     deleteProfie,
     getAllUsers,
+    changePasswordJWT
 }

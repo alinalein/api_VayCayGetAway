@@ -1,6 +1,8 @@
-const { models } = require('mongoose')
-
+const { body } = require('express-validator');
 const Reviews = require('../models/review').Review
+const checkForProfanity = require('../utils/profanityValidator');
+const validateReviewInput = require('../utils/validateReviewInput');
+const validationErrors = require('../utils/validationErros');
 
 const getAllReviews = async (req, res) => {
     try {
@@ -12,8 +14,14 @@ const getAllReviews = async (req, res) => {
     }
 }
 
-const createReview = async (req, res) => {
+const createReview = [body('rating').optional().isFloat({ min: 1, max: 5 }).withMessage('Rating must be a number between 1 and 5'),
+body('comment').optional().trim().escape().isLength({ min: 2 }).withMessage('Comment must be at least 2 characters long.').custom(checkForProfanity),
+body().custom(validateReviewInput),
+
+async (req, res) => {
     try {
+        if (validationErrors(req, res)) return; //without return function will be called multiple times - tries to send response multiple times
+
         // const userId = req.user?._id; -> object / const userId = req.user?.id; -> string
         const userId = req.user?.id
         const review = await Reviews.create({
@@ -33,7 +41,8 @@ const createReview = async (req, res) => {
         console.error(error)
         return res.status(500).send(`Error ${error} occured while creating review`)
     }
-}
+}]
+
 const deleteReview = async (req, res) => {
     try {
         const userId = req.user?.id
@@ -63,8 +72,13 @@ const deleteReview = async (req, res) => {
     }
 }
 
-const updateReview = async (req, res) => {
+const updateReview = [body('rating').optional().isFloat({ min: 1, max: 5 }).withMessage('Rating must be a number between 1 and 5'),
+body('comment').optional().trim().escape().isLength({ min: 2 }).withMessage('Comment must be at least 2 characters long.').custom(value => checkForProfanity(value)),
+body().custom(validateReviewInput),
+async (req, res) => {
     try {
+        if (validationErrors(req, res)) return;
+
         const userId = req.user?.id
 
         const review = await Reviews.findOne({
@@ -100,7 +114,7 @@ const updateReview = async (req, res) => {
         console.error(error)
         return res.status(500).send(`Error ${error} occured while updating review`)
     }
-}
+}]
 
 const getAverageRating = async (req, res) => {
     try {
