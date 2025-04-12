@@ -1,77 +1,65 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-generator client {
-  provider = "prisma-client-js"
+
+model destinations {
+  id                          Int                     @id @default(autoincrement())
+  name                        String
+  country                     String
+  description                 String
+  image_url                   String
+  best_time_to_visit          String
+  average_cost_per_day_in_eur Decimal                 @db.Decimal
+  tags                        String[]
+  things_to_do                String[]
+  favorite_destinations       favorite_destinations[]
+  reviews                     reviews[]
+  visited_destinations        visited_destinations[]
 }
 
-model User {
-  id                     Int      @id @default(autoincrement())
-  username               String
-  password               String
-  email                  String
-  birthday               DateTime
-  favoriteDestinations   FavoriteDestination[]
-  visitedDestinations    VisitedDestination[]
-  reviews                Review[]
+model favorite_destinations {
+  user_id        Int
+  destination_id Int
+  destinations   destinations @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, destination_id])
 }
 
-model Destination {
-  id                       Int      @id @default(autoincrement())
-  name                     String
-  country                  String
-  description              String
-  imageURL                 String
-  bestTimeToVisit          String
-  averageCostPerDayInEUR   Float
-  tags                     String[]
-  thingsToDo               String[]
-  favoritedBy              FavoriteDestination[]
-  visitedBy                VisitedDestination[]
-  reviews                  Review[]
-}
-
-model Review {
-  id             Int       @id @default(autoincrement())
-  user           User      @relation(fields: [userId], references: [id])
-  userId         Int
-  destination    Destination @relation(fields: [destinationId], references: [id])
-  destinationId  Int
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reviews {
+  id             Int           @id @default(autoincrement())
+  user_id        Int?
+  destination_id Int?
   rating         Int?
   comment        String?
-  createdAt      DateTime  @default(now())
-
-  @@check(rating IS NOT NULL OR comment IS NOT NULL)
+  created_at     DateTime?     @default(now()) @db.Timestamp(6)
+  destinations   destinations? @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-model FavoriteDestination {
-  userId        Int
-  destinationId Int
-
-  user          User        @relation(fields: [userId], references: [id])
-  destination   Destination @relation(fields: [destinationId], references: [id])
-
-  @@id([userId, destinationId])
+model users {
+  id                    Int                     @id @default(autoincrement())
+  username              String
+  password              String
+  email                 String
+  birthday              DateTime                @db.Date
+  favorite_destinations favorite_destinations[]
+  reviews               reviews[]
+  visited_destinations  visited_destinations[]
 }
 
-model VisitedDestination {
-  userId        Int
-  destinationId Int
+model visited_destinations {
+  user_id        Int
+  destination_id Int
+  destinations   destinations @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  user          User        @relation(fields: [userId], references: [id])
-  destination   Destination @relation(fields: [destinationId], references: [id])
-
-  @@id([userId, destinationId])
+  @@id([user_id, destination_id])
 }
