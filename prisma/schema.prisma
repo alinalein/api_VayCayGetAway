@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                     Int      @id @default(autoincrement())
+  username               String
+  password               String
+  email                  String
+  birthday               DateTime
+  favoriteDestinations   FavoriteDestination[]
+  visitedDestinations    VisitedDestination[]
+  reviews                Review[]
+}
+
+model Destination {
+  id                       Int      @id @default(autoincrement())
+  name                     String
+  country                  String
+  description              String
+  imageURL                 String
+  bestTimeToVisit          String
+  averageCostPerDayInEUR   Float
+  tags                     String[]
+  thingsToDo               String[]
+  favoritedBy              FavoriteDestination[]
+  visitedBy                VisitedDestination[]
+  reviews                  Review[]
+}
+
+model Review {
+  id             Int       @id @default(autoincrement())
+  user           User      @relation(fields: [userId], references: [id])
+  userId         Int
+  destination    Destination @relation(fields: [destinationId], references: [id])
+  destinationId  Int
+  rating         Int?
+  comment        String?
+  createdAt      DateTime  @default(now())
+
+  @@check(rating IS NOT NULL OR comment IS NOT NULL)
+}
+
+model FavoriteDestination {
+  userId        Int
+  destinationId Int
+
+  user          User        @relation(fields: [userId], references: [id])
+  destination   Destination @relation(fields: [destinationId], references: [id])
+
+  @@id([userId, destinationId])
+}
+
+model VisitedDestination {
+  userId        Int
+  destinationId Int
+
+  user          User        @relation(fields: [userId], references: [id])
+  destination   Destination @relation(fields: [destinationId], references: [id])
+
+  @@id([userId, destinationId])
+}

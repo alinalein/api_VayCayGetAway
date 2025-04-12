@@ -13,4 +13,5 @@ let generateJWTToken = (user) => {
         algorithm: 'HS256'
     })
 }
+
 module.exports = generateJWTToken
