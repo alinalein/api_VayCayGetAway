@@ -4,4 +4,4 @@ logs
 # Prisma
 .prisma/                        # internal Prisma client cache
 prisma/migrations/              # only when use npx prisma migrate dev
-src/generated     # where outputting the Prisma client / custom output
+src/generated/     # where outputting the Prisma client / custom output
