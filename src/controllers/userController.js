@@ -46,7 +46,12 @@ async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
         const allUsers = await Users.find()
-        return res.status(200).json(allUsers)
+        const safeUsers = allUsers.map(user => {
+            const { password, ...rest } = user.toObject(); //  using Mongoose syntax
+            return rest;
+        });
+
+        return res.status(200).json(safeUsers)
     }
     catch (error) {
         console.error(error)
@@ -86,7 +91,7 @@ async (req, res) => {
 
 
         const existingUser = await Users.findOne({ username }) // checks if username in the DB -> yes ->existingUser
-        if (existingUser && String(existingUser.id !== userId)) {
+        if (existingUser && String(existingUser.id) !== userId) {
             return res.status(401).send(`Username ${existingUser.username} already exists, please pick another one`)
         }
         const updatedUser = await Users.findOneAndUpdate(
@@ -100,8 +105,12 @@ async (req, res) => {
             },
             { new: true }
         )
+        // Convert to plain JS object
+        const userObject = updatedUser.toObject();
 
-        return res.status(200).json(updatedUser)
+        // Destructure password out
+        const { password, ...safeUser } = userObject;
+        return res.status(200).json(safeUser)
     }
     catch (error) {
         console.error(error)
@@ -142,7 +151,7 @@ const deleteDestination = async (req, res) => {
         }
 
         return res.status(200).json({
-            message: 'Destination removed from favorites',
+            message: `Destination removed from ${type} list`,
             user: updatedUser.username,
             [updatedField]: updatedUser[updatedField]
         })

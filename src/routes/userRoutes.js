@@ -16,4 +16,5 @@ router.delete('/deleteDestination/:type/:destinationId', jwt, deleteDestination)
 router.put('/addDestination/:type/:destinationId', jwt, addDestination)
 
 router.put('/changePassword', jwt, changePasswordJWT)
+
 module.exports = router; 

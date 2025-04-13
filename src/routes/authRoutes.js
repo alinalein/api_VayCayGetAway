@@ -19,6 +19,7 @@ router.post('/login', (req, res) => {
             //get a plain JavaScript object for token generation.
             let token = generateJWTToken(user.toJSON());
             let responseUser = {
+                _id: user.id,
                 username: user.username,
                 email: user.email,
                 birthday: user.birthday,

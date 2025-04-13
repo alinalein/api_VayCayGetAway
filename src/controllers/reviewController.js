@@ -33,6 +33,7 @@ async (req, res) => {
 
         return res.status(200).json(
             {
+                username: req.user.username,
                 message: 'review created',
                 review
             }
@@ -79,7 +80,7 @@ async (req, res) => {
     try {
         if (validationErrors(req, res)) return;
 
-        const userId = req.user?.id
+        const userId = req.user?.id //(string from JWT)
 
         const review = await Reviews.findOne({
             _id: req.params.reviewId
