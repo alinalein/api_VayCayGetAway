@@ -1,12 +1,12 @@
 const { body } = require('express-validator');
-const Reviews = require('../models/review').Review
+const prisma = require('../config/db')
 const checkForProfanity = require('../utils/profanityValidator');
 const validateReviewInput = require('../utils/validateReviewInput');
 const validationErrors = require('../utils/validationErros');
 
 const getAllReviews = async (req, res) => {
     try {
-        const reviews = await Reviews.find()
+        const reviews = await prisma.reviews.findMany()
         return res.status(200).json(reviews)
     } catch (error) {
         console.error(error)
@@ -24,11 +24,13 @@ async (req, res) => {
 
         // const userId = req.user?._id; -> object / const userId = req.user?.id; -> string
         const userId = req.user?.id
-        const review = await Reviews.create({
-            userID: userId,
-            destinationID: req.params.destinationId,
-            rating: req.body.rating,
-            comment: req.body.comment,
+        const review = await prisma.reviews.create({
+            data: {
+                user_id: userId,
+                destination_id: parseInt(req.params.destinationId),
+                rating: parseInt(req.body.rating),
+                comment: req.body.comment,
+            }
         })
 
         return res.status(200).json(
@@ -47,21 +49,23 @@ const deleteReview = async (req, res) => {
     try {
         const userId = req.user?.id
 
-        const review = await Reviews.findOne({
-            _id: req.params.reviewId
+        const review = await prisma.reviews.findUnique({
+            where: { id: parseInt(req.params.reviewId) }
         })
 
         if (!review) {
             return res.status(400).send('Not found')
         }
-        if (userId !== String(review.userID)) {
+        if (userId !== review.user_id) {
             return res.status(403).send('You can only delete your comments')
         }
 
-        const deletedReview = await Reviews.findOneAndDelete({
+        const deletedReview = await prisma.reviews.delete({
             // only delete if review id and user id of comment match the id in param and user id in token 
-            _id: req.params.reviewId,
-            userID: userId
+            where: {
+                id: parseInt(req.params.reviewId),
+                user_id: userId
+            }
         })
 
         return res.status(200).send('Review deleted')
@@ -81,28 +85,32 @@ async (req, res) => {
 
         const userId = req.user?.id
 
-        const review = await Reviews.findOne({
-            _id: req.params.reviewId
+        const review = await prisma.reviews.findUnique({
+            where: {
+                id: parseInt(req.params.reviewId)
+            }
         })
+
 
         if (!review) {
             return res.status(400).send('Not found')
         }
 
-        if (userId !== String(review.userID)) {
+        if (userId !== review.user_id) {
             return res.status(403).send('You can only delete your comments')
         }
 
-        const updatedReview = await Reviews.findOneAndUpdate(
+        const updatedReview = await prisma.reviews.update(
             {
-                _id: req.params.reviewId,
-                userID: userId
-            },
-            {
-                rating: req.body.rating,
-                comment: req.body.comment
-            },
-            { new: true }
+                where: {
+                    id: parseInt(req.params.reviewId),
+                    user_id: userId
+                },
+                data: {
+                    rating: parseInt(req.body.rating),
+                    comment: req.body.comment
+                }
+            }
         )
 
         return res.status(200).json({
@@ -118,12 +126,16 @@ async (req, res) => {
 
 const getAverageRating = async (req, res) => {
     try {
-        const destinationRatings = await Reviews.find({ destinationID: req.params.destinationId }, 'rating')
+        const destinationRatings = await prisma.reviews.findMany({
+            where: { destination_id: parseInt(req.params.destinationId) },
+            include: { destinations: true }
+        })
+
         if (!destinationRatings) {
             return res.status(400).send('Could not fetch ratings ')
         }
         const ratings = destinationRatings.map(dest => dest.rating)
-
+        console.log(ratings)
         const avarageRating = ratings.length ?
             ratings.reduce((a, b) => a + b, 0) / ratings.length
             : NaN;

@@ -4,7 +4,7 @@ const jwtSecret = 'the_jwt_secret' || process.env.JWT
 let generateJWTToken = (user) => {
     // jwt.sign(payload, secretKey, options)
     return jwt.sign({
-        id: user._id,
+        id: user.id,
         username: user.username
     },
         jwtSecret, {

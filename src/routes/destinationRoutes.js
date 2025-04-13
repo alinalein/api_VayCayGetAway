@@ -11,4 +11,4 @@ router.get('/destinations/:id', jwt, getDestinationById);
 
 router.get('/tags', jwt, getUniqueTags);
 
-module.exports = router; // exports router object that contains all routes that been created in file
+module.exports = router;

@@ -16,8 +16,8 @@ router.post('/login', (req, res) => {
             if (error) {
                 res.status(400).send(`Error occured while logging in: ${error}`)
             }
-            //get a plain JavaScript object for token generation.
-            let token = generateJWTToken(user.toJSON());
+            // toJSON is only for mongose object not needed for Postgres
+            let token = generateJWTToken(user);
             let responseUser = {
                 username: user.username,
                 email: user.email,
