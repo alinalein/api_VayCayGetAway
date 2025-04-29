@@ -42,7 +42,7 @@ npm dev
 - `POST /login` – Log in with credentials
 - `GET /users` – Get a list of all users
 - `PUT /updateProfile` – Update user profile
-- `PUT /changePassword ` – Change password (available in **JWT version** only)
+- `PUT /changePassword ` – Change password
 - `DELETE /deleteProfie` – Delete user account  
 - `POST /addDestination/:type/:destinationId` – Add spot to favorites  
 - `DELETE /deleteDestination/:type/:destinationId` – Remove spot from favorites  
