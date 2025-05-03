@@ -40,8 +40,10 @@ npm dev
 - `POST /signup` – Register a new user  
 - `POST /login` – Log in with credentials
 - `GET /users` – Get a list of all users
+- `GET /auth/google` – Redirects the user to Google's OAuth2 login page
+- `GET /auth/google/callback` – Handles the callback from Google after authentication
 - `PUT /updateProfile` – Update user profile
-- `PUT /changePassword ` – Change password (available in **JWT version** only)
+- `PUT /changePassword ` – Change password 
 - `DELETE /deleteProfie` – Delete user account  
 - `POST /addDestination/:type/:destinationId` – Add spot to favorites  
 - `DELETE /deleteDestination/:type/:destinationId` – Remove spot from favorites  
