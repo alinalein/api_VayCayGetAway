@@ -5,9 +5,6 @@ const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 
 const Users = require('../models/user').User;
 
-// let JWTStrategy = passport.Strategy;
-// let ExtractJWT = passportJWT.ExtractJwt;
-
 // ckecks username & password that is send by front end client with the BD 
 passport.use(
     new LocalStrategy(
