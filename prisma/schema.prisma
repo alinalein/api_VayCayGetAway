@@ -38,9 +38,11 @@ model reviews {
 model users {
   id                    Int                     @id @default(autoincrement())
   username              String                  @unique 
-  password              String
   email                 String
-  birthday              DateTime                @db.Date
+  password              String?                           //  optional for OAuth users
+  birthday              DateTime?               @db.Date  //  optional for OAuth users
+  googleId              String?                 @unique   // for Google login users
+
   favorite_destinations favorite_destinations[]
   reviews               reviews[]
   visited_destinations  visited_destinations[]

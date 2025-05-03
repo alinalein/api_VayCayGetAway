@@ -4,7 +4,9 @@ const app = express();  // Creates the Express app
 const logger = require('./utils/logger');
 const appliedCors = require('./config/cors')
 
-require('../src/config/passport') // register LocalStrategy & JwtStrategy globaly 
+require('./passport/passportJwT') // register LocalStrategy & JwtStrategy globaly 
+require('./passport/passportLocal')
+require('./passport/passportGoogle')
 
 // app.use(appliedCors); should always be called before the routes 
 
