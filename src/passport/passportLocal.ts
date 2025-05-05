@@ -1,19 +1,21 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const prisma = require('../config/db')
-const { validatePassword } = require('../utils/validateANDhash')
+import passport from 'passport'
+import { Strategy as LocalStrategy } from 'passport-local';
+import prisma from '../config/db'
+import { users } from '@prisma/client';
+import validateANDhash from '../utils/validateANDhash'
+const validatePassword = validateANDhash.validatePassword
 
-// ckecks username & password that is send by front end client with the BD 
+// ckecks username & password that is send by front end client with the DB 
 passport.use(
     new LocalStrategy(
         {
             usernameField: 'username',
             passwordField: 'password'
         },
-        async (username, password, done) => {
+        async (username: string, password: string, done): Promise<void> => {
             //console.log(`${username} ${password}`);
             try {
-                const user = await prisma.users.findUnique({ where: { username: username } });
+                const user: users | null = await prisma.users.findUnique({ where: { username: username } });
 
                 if (!user) {
                     console.log('username does not exists');
@@ -21,7 +23,7 @@ passport.use(
                         message: 'Wrong password or username'
                     });
                 }
-                const isValid = validatePassword(password, user.password);
+                const isValid = validatePassword(password, user.password || '');
                 if (!isValid) {
                     console.log('Incorrect password');
                     return done(null, false, { message: 'Wrong password or username' });
@@ -34,7 +36,7 @@ passport.use(
             } catch (error) {
                 if (error) {
                     console.error('Error during login:', error);
-                    return done(error);
+                    return done(error instanceof Error ? error : new Error(String(error)));
                 }
             }
         }

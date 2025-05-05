@@ -1,17 +1,19 @@
-const passport = require('passport');
-const generateJWTToken = require('../utils/jwt');
+import passport from 'passport'
+import generateJWTToken from '../utils/generateJWTToken'
+import { Request, Response, NextFunction } from 'express';
+import { users } from '@prisma/client';
 
-const loginUserJwT = (req, res, next) => {
-    passport.authenticate('local', { session: false }, (error, user) => {
+const loginUserJwT = (req: Request, res: Response, next: NextFunction): void => {
+    passport.authenticate('local', { session: false }, (error: unknown, user: users | false) => {
         if (error || !user) {
             return res.status(400).json({
                 message: 'Could not log in',
                 // username: user.username,
-                user
+                user: null
             });
         }
 
-        req.login(user, { session: false }, (err) => {
+        (req as any).login(user, { session: false }, (err: unknown) => {
             if (err) {
                 return res.status(400).send(`Login error: ${err}`);
             }
@@ -24,23 +26,28 @@ const loginUserJwT = (req, res, next) => {
                 birthday: user.birthday,
             };
 
-            return res.status(201).json({ message: 'user logged in', responseUser, token });
+            return res.status(201).json({
+                message: 'user logged in',
+                user: responseUser,
+                token
+            });
         });
     })(req, res, next);
 };
 
-const loginGoogleStart = (req, res, next) => {
+const loginGoogleStart =
+    // (req: Request, res: Response, next: NextFunction): void => {
     passport.authenticate('google', { scope: ['profile', 'email'] })
-        (req, res, next);
-}
+//         (req, res, next);
+// }
 
-const loginGoogleCallback = (req, res, next) => {
-    passport.authenticate('google', { session: false }, (err, user) => {
+const loginGoogleCallback = (req: Request, res: Response, next: NextFunction): void => {
+    passport.authenticate('google', { session: false }, (err: unknown, user: users | false) => {
 
         if (err || !user) {
             return res.status(401).json({ message: 'Authentication failed', user })
         }
-        req.login(user, { session: false }, (err) => {
+        (req as any).login(user, { session: false }, (err: unknown) => {
             if (err) {
                 return res.status(400).send(`Login error: ${err}`)
             }
@@ -55,10 +62,10 @@ const loginGoogleCallback = (req, res, next) => {
             return res.status(200).json({
                 message: 'OAuth login successful',
                 token,
-                responseUser
+                user: responseUser
             });
         })
     })(req, res, next);
 }
 
-module.exports = { loginUserJwT, loginGoogleStart, loginGoogleCallback }
+export default { loginUserJwT, loginGoogleStart, loginGoogleCallback }

@@ -1,15 +1,15 @@
-const cors = require('cors');
+import cors, { CorsOptions } from 'cors'
 
-const allowedURLs = [
+const allowedURLs: string[] = [
     'http://localhost:8080',
-    '',
+    'http://localhost:5173',
     ''
 ]
-const corsResponse = {
+const corsResponse: CorsOptions = {
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
 
-        const isAllowed = allowedOrigins.includes(origin);
+        const isAllowed = allowedURLs.includes(origin);
 
         if (!isAllowed) {
             const message = `CORS policy: The origin "${origin}" is not allowed.`
@@ -19,4 +19,5 @@ const corsResponse = {
     }
 }
 const appliedCors = cors(corsResponse);
-module.exports = appliedCors
+
+export default appliedCors; 

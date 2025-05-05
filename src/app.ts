@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 import path from 'path';
 import logger from './utils/logger';
-// import appliedCors from './config/cors';
+import appliedCors from './config/cors';
 
 import './passport/passportJwT';// register Strategies globaly 
 import './passport/passportLocal';
@@ -13,7 +13,9 @@ import destinationRoutes from './routes/destinationRoutes';
 import userRoutes from './routes/userRoutes';
 import reviewRoutes from './routes/reviewRoutes';
 
-// app.use(appliedCors); should always be called before the routes 
+// should always be called before the routes 
+app.use(appliedCors);
+
 app.use(logger); //applies logger middleware to all route calls
 
 // express.static -> automatically routes all requests for static files (html) to their corresponding files within a certain folder on the server 
