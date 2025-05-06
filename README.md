@@ -32,7 +32,7 @@ npm install
 ```
 ### Run the server
 ```
-npm dev
+npm run dev
 ```
 
 ## API Endpoints 🔍
@@ -67,9 +67,10 @@ All endpoints were tested using **Postman**.
 To test on your own machine:
 
 1. Open the `postman-tests` folder in this repo  
-2. Import the collection into your Postman client  
-3. Make sure your server is running
-
+2. Import the corresponding .postman_collection.json file into your Postman client (either for MongoDB or PostgreSQL).
+3. Make sure your server is running.
+4. Open Postman and run the desired requests or test collections.
+   
 ## Deployment
 
 This project is currently in development.  
