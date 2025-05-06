@@ -1,0 +1,557 @@
+{
+	"info": {
+		"_postman_id": "749c4a3c-43bd-45d5-9ba2-896141767d8a",
+		"name": "VayCay_PostgresSQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31250744"
+	},
+	"item": [
+		{
+			"name": "Destinations",
+			"item": [
+				{
+					"name": "All Destinations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/destinations/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"destinations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Destination",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/destinations/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"destinations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Tags",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/tags",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Log In",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/login?username=lina1234&password=lina1234",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "lina1234"
+								},
+								{
+									"key": "password",
+									"value": "lina1234"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"lina1234\",\r\n  \"password\": \"lina1234\",\r\n  \"email\": \"mira123@exampleee.com\",\r\n  \"birthday\": \"1991-01-01T00:00:00.000Z\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJsaW5hMTIzIiwiaWF0IjoxNzQ2NDUzNjY0LCJleHAiOjE3NDcwNTg0NjQsInN1YiI6ImxpbmExMjMifQ.l1FiWx6V2uZdP2FvysOW2zXeGSnlFuna0Eets-1QWv8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/deleteProfie",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"deleteProfie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"lina12345\",\r\n  \"email\": \"tetst@gmx.de\",\r\n  \"birthday\": \"2002-05-13\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/updateProfile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"updateProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDYzOTgxMDksImV4cCI6MTc0NzAwMjkwOSwic3ViIjoibGluYTEyMzQ1In0.zlRtIgXRzraulf32EIeji5m4S-W3y2iOZI_ayHywlrk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"mira1234\",\r\n    \"newPassword\": \"lina12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/changePassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"changePassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Destination",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/deleteDestination/visited/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"deleteDestination",
+								"visited",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Destination",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJsaW5hMTIzNCIsImlhdCI6MTc0NDU3Mzc3NSwiZXhwIjoxNzQ1MTc4NTc1LCJzdWIiOiJsaW5hMTIzNCJ9.Z6rrVhCQ9WGdyEz_U93etguiGoOyYQHrJTsbI82z35A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/addDestination/visited/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"addDestination",
+								"visited",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users Destinations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/usersDestinations/visited",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"usersDestinations",
+								"visited"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Write Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\":\"5\",\r\n\"comment\":\"nice\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/writeReview/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"writeReview",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Reviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/reviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/deleteReview/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"deleteReview",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\":\"4\",\r\n\"comment\":\"love\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/updateReview/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"updateReview",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Avarage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJsaW5hMTIzNDUiLCJpYXQiOjE3NDY0NTM2ODYsImV4cCI6MTc0NzA1ODQ4Niwic3ViIjoibGluYTEyMzQ1In0.os_1XvQzXNVjZH9kWPxS0QtdjFyiFTFuocV0wRZv8ro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/rating/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"rating",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

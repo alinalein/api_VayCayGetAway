@@ -6,13 +6,6 @@ const { validatePassword, hashPassword } = validateANDhash
 import { Request, Response } from 'express'
 import { users } from '@prisma/client'
 
-// Extended interface to allow access to req.user injected by authentication middleware -otherwise cant recognize the user id from token
-interface AuthenticatedRequest extends Request {
-    user?: {
-        id: number;
-        username: string;
-    };
-}
 const signUp = [body('username')
     .isAlphanumeric()
     .isLength({ min: 5 })
@@ -83,13 +76,13 @@ const getAllUsers = async (req: Request, res: Response): Promise<void> => {
 
 const deleteProfile = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = req.user as { id: number } | undefined;
-        if (!user?.id) {
+        const userId = req.user?.id;
+        if (!userId) {
             res.status(401).send('Unauthorized');
             return;
         }
 
-        const deletedUser = await prisma.users.delete({ where: { id: user.id } })
+        const deletedUser = await prisma.users.delete({ where: { id: userId } })
         res.status(200).send(`Profile deleted successful`)
     }
     catch (error) {
@@ -115,8 +108,7 @@ const updateProfile = [
             if (validationErrors(req, res)) return;
 
             // try to access user - if user - null - will not crash because of ? 
-            const user = (req as AuthenticatedRequest).user;
-            const userId = user?.id;
+            const userId = req.user?.id;
             if (!userId) {
                 res.status(401).send('You must be logged in for this operation')
                 return
@@ -158,8 +150,8 @@ const updateProfile = [
 
 const deleteDestination = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = (req as AuthenticatedRequest).user;
-        const userId = user?.id;
+        const userId = req.user?.id;
+
         const { type, destinationId } = req.params
         const destinationIdInt = parseInt(destinationId);
         const validTypes = ['visited', 'favorite']
@@ -236,8 +228,7 @@ const deleteDestination = async (req: Request, res: Response): Promise<void> => 
 
 const addDestination = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = (req as AuthenticatedRequest).user;
-        const userId = user?.id;
+        const userId = req.user?.id;
         const { destinationId, type } = req.params
         const destinationIdInt = parseInt(destinationId);
 
@@ -310,8 +301,7 @@ const addDestination = async (req: Request, res: Response): Promise<void> => {
 
 const usersDestinations = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = (req as AuthenticatedRequest).user;
-        const userId = user?.id;
+        const userId = req.user?.id;
         const validTypes = ['visited', 'favorite']
         const requestType = req.params.type
         if (!validTypes.includes(requestType)) {
@@ -360,8 +350,7 @@ async (req: Request, res: Response): Promise<void> => {
     try {
         if (validationErrors(req, res)) return;
 
-        const user = (req as AuthenticatedRequest).user;
-        const userId = user?.id;
+        const userId = req.user?.id;
         if (!userId) {
             res.status(400).send('Invalid user ID.');
             return;

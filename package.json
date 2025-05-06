@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
-    "bad-words": "^4.0.0",
     "leo-profanity": "^1.7.0",
     "passport-google-oauth20": "^2.0.0"
   }

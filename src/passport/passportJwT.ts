@@ -2,11 +2,7 @@ import passport from 'passport'
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions, VerifiedCallback } from 'passport-jwt';
 import prisma from '../config/db'
 import { users } from '@prisma/client';
-
-interface JwtPayload {
-    id: number;
-    username: string;
-}
+import { JwtPayload } from '../types/auth';
 
 // Define the options for the strategy
 const opts: StrategyOptions = {
