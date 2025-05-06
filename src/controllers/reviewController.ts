@@ -6,14 +6,6 @@ import validationErrors from '../utils/validationErros'
 import { Request, Response } from 'express'
 import { reviews } from '@prisma/client'
 
-// Extended interface to allow access to req.user injected by authentication middleware -otherwise cant recognize the user id from token
-interface AuthenticatedRequest extends Request {
-    user?: {
-        id: number;
-        username: string;
-    };
-}
-
 const getAllReviews = async (req: Request, res: Response): Promise<void> => {
     try {
         const reviews = await prisma.reviews.findMany()
@@ -45,7 +37,7 @@ const createReview = [
             if (validationErrors(req, res)) return; //without return function will be called multiple times - tries to send response multiple times
 
             // const userId = req.user?._id; -> object / const userId = req.user?.id; -> string
-            const userId = (req as AuthenticatedRequest).user?.id;
+            const userId = req.user?.id;
             const rating = req.body.rating !== undefined ? parseFloat(req.body.rating) : undefined;
 
             const review = await prisma.reviews.create({
@@ -71,7 +63,7 @@ const createReview = [
 
 const deleteReview = async (req: Request, res: Response): Promise<void> => {
     try {
-        const userId = (req as AuthenticatedRequest).user?.id;
+        const userId = req.user?.id;
 
         const review: reviews | null = await prisma.reviews.findUnique({
             where: { id: parseInt(req.params.reviewId) }
@@ -117,14 +109,13 @@ async (req: Request, res: Response): Promise<void> => {
     try {
         if (validationErrors(req, res)) return;
 
-        const userId = (req as AuthenticatedRequest).user?.id;
+        const userId = req.user?.id;
 
         const review: reviews | null = await prisma.reviews.findUnique({
             where: {
                 id: parseInt(req.params.reviewId)
             }
         })
-
 
         if (!review) {
             res.status(400).send('Not found')
