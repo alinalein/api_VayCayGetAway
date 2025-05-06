@@ -90,7 +90,3 @@ Deployment instructions (e.g. Heroku, Railway, Render) will be added soon.
 - Modular codebase with middleware and controller separation  
 - Two complete versions (JavaScript + TypeScript)
 
-## Coming Soon 🌐
-
-- Live demo links
-- > 📝 API documentation generated with **JSDoc**  and **TypeDoc** OR Swagger/OpenAPI documentation.
