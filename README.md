@@ -8,7 +8,8 @@ A modular RESTful API that allows users to explore, rate, and comment on vacatio
 - **Express.js**: Minimalist web framework for Node.js  
 - **MongoDB**: NoSQL database for flexible data storage (JavaScript variant)  
 - **Mongoose**: ODM for MongoDB and Node.js  
-- **PostgreSQL**: Relational SQL database (TypeScript variant)  
+- **PostgreSQL**: Relational SQL database (TypeScript variant)
+- **Prisma:** ORM for Node.js and TypeScript that enables type-safe database access and simplifies querying.
 - **OAuth2**: Secure login and authorization protocol  
 - **JWT**: JSON Web Token for stateless authentication  
 - **Postman**: For testing endpoints and debugging  
