@@ -1,4 +1,5 @@
 .env
+PRIVATE_README.md
 node_modules
 logs
 # Prisma
