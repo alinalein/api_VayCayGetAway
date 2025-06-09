@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./node_modules/@prisma/client"
 }
 
 datasource db {
@@ -12,7 +13,8 @@ model destinations {
   name                        String
   country                     String
   description                 String
-  image_url                   String
+  image_horizontal            Json?       // as fetched later from API and not added on create - array of { url, creditor }
+  image_vertical              Json?       // as fetched later from API and not added on create
   best_time_to_visit          String
   average_cost_per_day_in_eur Decimal                 @db.Decimal
   tags                        String[]
@@ -28,7 +30,8 @@ model reviews {
   user_id        Int?
   destination_id Int?
   rating         Int?
-  comment        String?
+  positive_comment String? 
+  negative_comment String? 
   created_at     DateTime?     @default(now()) @db.Timestamp(6)
   destinations   destinations? @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users          users?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
