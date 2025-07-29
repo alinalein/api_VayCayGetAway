@@ -110,10 +110,11 @@ Access the tool at [http://localhost:3000/viewUnsplashImages.html](http://localh
 All endpoints were tested using **Postman**.  
 To test on your own machine:
 
-1. Open the `postman-tests` folder in this repo
-2. Import the collection into your Postman client
-3. Make sure your server is running
-
+1. Open the `postman-tests` folder in this repo  
+2. Import the corresponding .postman_collection.json file into your Postman client (either for MongoDB or PostgreSQL).
+3. Make sure your server is running.
+4. Open Postman and run the desired requests or test collections.
+   
 ## Deployment
 
 This project is currently in development.  
@@ -137,3 +138,4 @@ Deployment instructions (e.g. Heroku, Railway, Render) will be added soon.
 ## Coming Soon 🌐
 
 - Live demo links
+
