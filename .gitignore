@@ -1,6 +1,8 @@
 .env
 PRIVATE_README.md
+assets
 node_modules
 logs
 # Prisma
 .prisma/                        # internal Prisma client cache
+
