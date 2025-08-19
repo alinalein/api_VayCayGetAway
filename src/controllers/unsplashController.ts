@@ -16,6 +16,8 @@ const saveSelectedUnsplashImage = async (
 
   try {
     const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
+
+    // URL from API : `https://api.unsplash.com/photos/${photoId}?client_id=${ACCESS_KEY}`;
     const unsplashRes = await axios.get(
       `https://api.unsplash.com/photos/${photoId}`,
       {
@@ -29,11 +31,11 @@ const saveSelectedUnsplashImage = async (
     const imageUrl = photo.urls.regular;
     const credit = photo.user.name;
 
-    const destination = await prisma.destinations.findFirst({
+    const destination = await prisma.destination.findFirst({
       where: {
         name: {
           equals: destinationName,
-          mode: "insensitive",
+          mode: "insensitive", // case insensitiv
         },
       },
       select: {
@@ -52,6 +54,7 @@ const saveSelectedUnsplashImage = async (
       const existing =
         (destination.image_horizontal as ImageHorizontalArray) || [];
 
+      // add to the existing array the new picture object
       const updated: ImageHorizontalArray = [
         ...existing,
         {
@@ -60,7 +63,7 @@ const saveSelectedUnsplashImage = async (
         },
       ];
 
-      await prisma.destinations.update({
+      await prisma.destination.update({
         where: { id: destination.id },
         data: {
           image_horizontal: updated,
@@ -72,7 +75,8 @@ const saveSelectedUnsplashImage = async (
         creditor: credit,
       };
 
-      await prisma.destinations.update({
+      // update the field with an object of the picture
+      await prisma.destination.update({
         where: { id: destination.id },
         data: {
           image_vertical: vertical,

@@ -4,7 +4,7 @@ import validationErrors from "../utils/validationErros";
 import validateANDhash from "../utils/validateANDhash";
 const { validatePassword, hashPassword } = validateANDhash;
 import { Request, Response } from "express";
-import { users } from "@prisma/client";
+import { User } from "@prisma/client";
 
 import { AuthenticatedRequest } from "../types/custom";
 
@@ -31,7 +31,7 @@ const signUp = [
         res.status(401).send("User required");
         return;
       }
-      const existingUser: users | null = await prisma.users.findUnique({
+      const existingUser: User | null = await prisma.user.findUnique({
         where: { username: req.body.username },
       });
 
@@ -45,7 +45,7 @@ const signUp = [
       } else {
         try {
           const hashedPassword = hashPassword(req.body.password);
-          const newUser = await prisma.users.create({
+          const newUser = await prisma.user.create({
             data: {
               username: req.body.username,
               password: hashedPassword,
@@ -70,9 +70,26 @@ const signUp = [
   },
 ];
 
+// Promise is onyly used in async functions , when no async then just void instead of Promise<void>
+const logout = (req: Request, res: Response): void => {
+  res.clearCookie("token", {
+    // Marks the cookie as inaccessible to JavaScript running in the browser.
+    // Prevents XSS (Cross-Site Scripting) attacks from stealing your JWT or session cookie.
+    httpOnly: true,
+    // Cookie can be sent over plain HTTP in dev, but Cookie will only be sent over HTTPS in production.
+    // secure: true, the cookie will only be sent over HTTPS, so when in development and use HTTP , it will get an error
+    // secure: false, the cookie will only be sent over HTTP too even in production, can be hacked easier
+    secure: true,
+    // Controls when a cookie is sent with cross-origin requests (e.g., frontend on one domain, API on another).
+    sameSite: "none",
+  });
+  res.status(200).json({ message: "Logged out" });
+  return;
+};
+
 const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const allUsers = await prisma.users.findMany();
+    const allUsers = await prisma.user.findMany();
     res.status(200).json(allUsers);
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
@@ -88,7 +105,7 @@ const deleteProfile = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const deletedUser = await prisma.users.delete({ where: { id: userId } });
+    const deletedUser = await prisma.user.delete({ where: { id: userId } });
     res.status(200).send(`Profile deleted successful`);
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
@@ -123,18 +140,26 @@ const updateProfile = [
         return;
       }
 
-      const existingUser = await prisma.users.findUnique({
-        where: { username },
-      }); // checks if username in the DB -> yes ->existingUser
-      if (existingUser && String(existingUser.id !== userId)) {
-        res
-          .status(401)
-          .send(
-            `Username ${existingUser.username} already exists, please pick another one`
-          );
-        return;
-      }
-      const updatedUser = await prisma.users.update({
+      const existingUser = await prisma.user.findUnique({
+  where: { username },
+});
+
+if (existingUser) {
+  if (String(existingUser.id) === String(userId)) {
+    // The user is trying to save the same username they already have
+     res.status(400).send('No change in username detected.');
+     return
+  } else {
+    // The username is already taken by another user
+     res
+      .status(409)
+      .send(`Username "${existingUser.username}" already exists, please pick another one.`);
+  return}
+}
+
+      
+   
+      const updatedUser = await prisma.user.update({
         where: {
           id: userId,
         },
@@ -177,7 +202,7 @@ const deleteDestination = async (
 
     // Handle "visited"
     if (type === "visited") {
-      const isInList = await prisma.visited_destinations.findUnique({
+      const isInList = await prisma.visitedDestination.findUnique({
         where: {
           user_id_destination_id: {
             user_id: userId,
@@ -191,7 +216,7 @@ const deleteDestination = async (
         return;
       }
 
-      await prisma.visited_destinations.delete({
+      await prisma.visitedDestination.delete({
         where: {
           user_id_destination_id: {
             user_id: userId,
@@ -201,7 +226,7 @@ const deleteDestination = async (
       });
     } else {
       // Handle "favorite"
-      const isInList = await prisma.favorite_destinations.findUnique({
+      const isInList = await prisma.favoriteDestination.findUnique({
         where: {
           user_id_destination_id: {
             user_id: userId,
@@ -215,7 +240,7 @@ const deleteDestination = async (
         return;
       }
 
-      await prisma.favorite_destinations.delete({
+      await prisma.favoriteDestination.delete({
         where: {
           user_id_destination_id: {
             user_id: userId,
@@ -253,7 +278,7 @@ const addDestination = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     if (type === "favorite") {
-      const exists = await prisma.favorite_destinations.findUnique({
+      const exists = await prisma.favoriteDestination.findUnique({
         where: {
           user_id_destination_id: {
             user_id: userId,
@@ -267,7 +292,7 @@ const addDestination = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      await prisma.favorite_destinations.create({
+      await prisma.favoriteDestination.create({
         data: {
           user_id: userId,
           destination_id: destinationIdInt,
@@ -276,7 +301,7 @@ const addDestination = async (req: Request, res: Response): Promise<void> => {
 
       res.status(200).json({ message: "Destination added to favorite list" });
     } else {
-      const exists = await prisma.visited_destinations.findUnique({
+      const exists = await prisma.visitedDestination.findUnique({
         where: {
           user_id_destination_id: {
             user_id: userId,
@@ -290,7 +315,7 @@ const addDestination = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      await prisma.visited_destinations.create({
+      await prisma.visitedDestination.create({
         data: {
           user_id: userId,
           destination_id: destinationIdInt,
@@ -326,26 +351,26 @@ const usersDestinations = async (
       return;
     }
     let usersList:
-      | { destinations: any }[] // You can replace `any` with a proper `Destination` type if defined
+      | { destination: any }[] // You can replace `any` with a proper `Destination` type if defined
       | undefined;
 
     if (requestType === "favorite") {
-      usersList = await prisma.favorite_destinations.findMany({
+      usersList = await prisma.favoriteDestination.findMany({
         where: { user_id: userId },
-        include: { destinations: true },
+        include: { destination: true },
       });
     } else {
-      usersList = await prisma.visited_destinations.findMany({
+      usersList = await prisma.visitedDestination.findMany({
         where: { user_id: userId },
         // gets the full related destination info via foreign key - here destination_id
 
-        include: { destinations: true },
+        include: { destination: true },
       });
     }
 
     res.status(200).json({
       userDestinations: usersList.map(
-        (entry: { destinations: any }) => entry.destinations
+        (entry: { destination: any }) => entry.destination
       ),
     });
   } catch (error) {
@@ -371,7 +396,7 @@ const changePasswordJWT = [
         res.status(400).send("Invalid user ID.");
         return;
       }
-      const existingUser: users | null = await prisma.users.findUnique({
+      const existingUser: User | null = await prisma.user.findUnique({
         where: { id: userId },
       });
 
@@ -395,7 +420,7 @@ const changePasswordJWT = [
       }
 
       const newPassword = hashPassword(req.body.newPassword);
-      const updatedPassword = await prisma.users.update({
+      const updatedPassword = await prisma.user.update({
         where: { id: userId },
         data: {
           password: newPassword,
@@ -422,4 +447,5 @@ export default {
   getAllUsers,
   changePasswordJWT,
   usersDestinations,
+  logout,
 };

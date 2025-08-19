@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions, VerifiedCallback } from 'passport-jwt';
 import prisma from '../config/db'
-import { users } from '@prisma/client';
+import { User } from '@prisma/client';
 import { JwtPayload } from '../types/auth';
 
 // Define the options for the strategy
@@ -15,7 +15,7 @@ passport.use(
     new JwtStrategy(opts, async (jwtPayload: JwtPayload, done: VerifiedCallback): Promise<void> => {
         try {
             // as set _id to id in jws.js
-            const user: users | null = await prisma.users.findUnique({ where: { id: jwtPayload.id } })
+            const user: User | null = await prisma.user.findUnique({ where: { id: jwtPayload.id } })
             return done(null, user || false)  // false if no user found
         } catch (error) {
             console.error('Error during JWT verification:', error);

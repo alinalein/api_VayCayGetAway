@@ -1,10 +1,10 @@
 import passport from 'passport'
 import generateJWTToken from '../utils/generateJWTToken'
 import { Request, Response, NextFunction } from 'express';
-import { users } from '@prisma/client';
+import { User } from '@prisma/client';
 
 const loginUserJwT = (req: Request, res: Response, next: NextFunction): void => {
-    passport.authenticate('local', { session: false }, (error: unknown, user: users | false) => {
+    passport.authenticate('local', { session: false }, (error: unknown, user: User | false) => {
         if (error || !user) {
             return res.status(400).json({
                 message: 'Could not log in',
@@ -42,7 +42,7 @@ const loginGoogleStart =
 // }
 
 const loginGoogleCallback = (req: Request, res: Response, next: NextFunction): void => {
-    passport.authenticate('google', { session: false }, (err: unknown, user: users | false) => {
+    passport.authenticate('google', { session: false }, (err: unknown, user: User | false) => {
 
         if (err || !user) {
             return res.status(401).json({ message: 'Authentication failed', user })
