@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local';
 import prisma from '../config/db'
-import { users } from '@prisma/client';
+import { User } from '@prisma/client';
 import validateANDhash from '../utils/validateANDhash'
 const validatePassword = validateANDhash.validatePassword
 
@@ -15,7 +15,7 @@ passport.use(
         async (username: string, password: string, done): Promise<void> => {
             //console.log(`${username} ${password}`);
             try {
-                const user: users | null = await prisma.users.findUnique({ where: { username: username } });
+                const user: User | null = await prisma.user.findUnique({ where: { username: username } });
 
                 if (!user) {
                     console.log('username does not exists');

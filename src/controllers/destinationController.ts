@@ -1,10 +1,10 @@
 import prisma from "../config/db";
 import { Request, Response } from "express";
-import { destinations } from "@prisma/client";
+import { Destination } from "@prisma/client";
 
 const getAllDestinations = async (req: Request, res: Response): Promise<void> => {
     try {
-        const allDestinations = await prisma.destinations.findMany();
+        const allDestinations = await prisma.destination.findMany();
         res.status(200).json(allDestinations);
     } catch (error) {
         console.error(error instanceof Error ? error.message : error);
@@ -14,7 +14,7 @@ const getAllDestinations = async (req: Request, res: Response): Promise<void> =>
 
 const getDestinationById = async (req: Request, res: Response): Promise<void> => {
     try {
-        const destination: destinations | null = await prisma.destinations.findUnique({
+        const destination: Destination | null = await prisma.destination.findUnique({
             where: { id: parseInt(req.params.id) }
         });
         if (!destination) {
@@ -30,7 +30,7 @@ const getDestinationById = async (req: Request, res: Response): Promise<void> =>
 
 const getUniqueTags = async (req: Request, res: Response): Promise<void> => {
     try {
-        const destinationTags = await prisma.destinations.findMany({
+        const destinationTags = await prisma.destination.findMany({
             select: {
                 tags: true
             }
