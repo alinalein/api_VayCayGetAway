@@ -4,12 +4,12 @@ import checkForProfanity from "../utils/profanityValidator";
 import validateReviewInput from "../utils/validateReviewInput";
 import validationErrors from "../utils/validationErros";
 import { Request, Response } from "express";
-import { reviews } from "@prisma/client";
+import { Review } from "@prisma/client";
 import { AuthenticatedRequest } from "../types/custom";
 
 const getAllReviews = async (req: Request, res: Response): Promise<void> => {
   try {
-    const reviews = await prisma.reviews.findMany();
+    const reviews = await prisma.review.findMany();
     res.status(200).json(reviews);
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
@@ -46,10 +46,14 @@ const createReview = [
 
       // const userId = req.user?._id; -> object / const userId = req.user?.id; -> string
       const userId = (req as AuthenticatedRequest).user?.id;
+      if (!userId) {
+   res.status(401).json({ error: "User not authenticated" });
+   return;
+}
       const rating =
         req.body.rating !== undefined ? parseFloat(req.body.rating) : undefined;
 
-      const review = await prisma.reviews.create({
+      const review = await prisma.review.create({
         data: {
           user_id: userId,
           destination_id: parseInt(req.params.destinationId),
@@ -74,7 +78,7 @@ const deleteReview = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as AuthenticatedRequest).user?.id;
 
-    const review: reviews | null = await prisma.reviews.findUnique({
+    const review: Review | null = await prisma.review.findUnique({
       where: { id: parseInt(req.params.reviewId) },
     });
 
@@ -87,7 +91,7 @@ const deleteReview = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    await prisma.reviews.delete({
+    await prisma.review.delete({
       // only delete if review id and user id of comment match the id in param and user id in token
       where: {
         id: parseInt(req.params.reviewId),
@@ -121,7 +125,7 @@ const updateReview = [
 
       const userId = (req as AuthenticatedRequest).user?.id;
 
-      const review: reviews | null = await prisma.reviews.findUnique({
+      const review: Review | null = await prisma.review.findUnique({
         where: {
           id: parseInt(req.params.reviewId),
         },
@@ -137,7 +141,7 @@ const updateReview = [
         return;
       }
 
-      const updatedReview = await prisma.reviews.update({
+      const updatedReview = await prisma.review.update({
         where: {
           id: parseInt(req.params.reviewId),
           user_id: userId,
@@ -165,7 +169,7 @@ const getAverageRating = async (req: Request, res: Response): Promise<void> => {
   try {
     const destinationId = parseInt(req.params.destinationId);
 
-    const destinationRatings = await prisma.reviews.findMany({
+    const destinationRatings = await prisma.review.findMany({
       where: { destination_id: destinationId },
       // include: { destinations: true }
       select: { rating: true },

@@ -10,11 +10,11 @@ passport.use(
         callbackURL: '/auth/google/callback',
     }, async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback): Promise<void> => {
         try {
-            let user = await prisma.users.findUnique({
+            let user = await prisma.user.findUnique({
                 where: { googleId: profile.id }
             });
             if (!user) {
-                user = await prisma.users.create({
+                user = await prisma.user.create({
                     data: {
                         username: profile.displayName,
                         googleId: profile.id,

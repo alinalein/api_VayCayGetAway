@@ -31,7 +31,7 @@ const saveSelectedUnsplashImage = async (
     const imageUrl = photo.urls.regular;
     const credit = photo.user.name;
 
-    const destination = await prisma.destinations.findFirst({
+    const destination = await prisma.destination.findFirst({
       where: {
         name: {
           equals: destinationName,
@@ -63,7 +63,7 @@ const saveSelectedUnsplashImage = async (
         },
       ];
 
-      await prisma.destinations.update({
+      await prisma.destination.update({
         where: { id: destination.id },
         data: {
           image_horizontal: updated,
@@ -76,7 +76,7 @@ const saveSelectedUnsplashImage = async (
       };
 
       // update the field with an object of the picture
-      await prisma.destinations.update({
+      await prisma.destination.update({
         where: { id: destination.id },
         data: {
           image_vertical: vertical,
